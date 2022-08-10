@@ -34,16 +34,18 @@ all:
 # installation for development and build example
 ##########################################################################
 install-here:
-	rm -rf build
-	mkdir build
-	cd build ; cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=$(PROJECT_DIR)/installation -DNADJIEB_MJPEG_STREAMER_BuildTests=OFF
+	#rm -rf build
+	mkdir -p build
+	#cd build ; cmake .. -GNinja -DCMAKE_INSTALL_PREFIX=$(PROJECT_DIR)/installation -DNADJIEB_MJPEG_STREAMER_BuildTests=OFF
+	cd build ; cmake .. -G"Unix Makefiles" -DCMAKE_INSTALL_PREFIX=$(PROJECT_DIR)/installation -DNADJIEB_MJPEG_STREAMER_BuildTests=OFF
 	rm -rf installation
 	mkdir installation
-	cd build ; ninja install
+	#cd build ; ninja install
+	cd build ; make install
 
 build-example:
-	rm -rf examples/build
-	mkdir examples/build
+	#rm -rf examples/build
+	mkdir -p examples/build
 	cd examples/build ; cmake .. -GNinja -DCMAKE_BUILD_TYPE=Debug -DCMAKE_PREFIX_PATH=$(PROJECT_DIR)/installation/lib/cmake
 	cd examples/build ; ninja
 
@@ -85,3 +87,47 @@ check-single-includes:
 	  $(CXX) $(CXXFLAGS) -Iinclude -std=c++11 single_include_test.cpp -o single_include_test; \
 	  rm -f single_include_test.cpp single_include_test; \
 	done
+
+build/cmake:
+	mkdir -p build
+	cd build; cmake ..;
+
+build: build/cmake
+	cd build; make
+
+build/native/conan:
+	mkdir -p build
+	mkdir -p examples/build
+	cd build && \
+		conan install .. --build=missing
+	cd examples/build && \
+		conan install .. --build=missing
+
+build/native/cmake:
+	mkdir -p build
+	mkdir -p examples/build
+	cd build && \
+		cmake .. -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake && \
+		cmake --build . --config Release
+	cd examples/build && \
+		cmake .. -G"Unix Makefiles" -DCMAKE_TOOLCHAIN_FILE=conan_toolchain.cmake && \
+		cmake --build . --config Release
+
+THIS_PATH="$(realpath "$0")"
+THIS_DIR="$(dirname "$THIS_PATH")"
+# Find all files in THIS_DIR which end in .ino, .cpp, etc., as specified
+# in the regular expression just below
+FILE_LIST="$(find "$(THIS_DIR)" | grep -E ".*(\.ino|\.cpp|\.c|\.h|\.hpp|\.hh)$")"
+
+clang-format:
+	./scripts/run_clang_format.sh
+
+create/native:
+	mkdir -p build
+	cd build && \
+		conan create .. cpp-mjpeg-streamer/0.1@test/testing -s build_type=Release --build=missing
+
+create/arm:
+	mkdir -p build
+	cd build && \
+		conan create .. cpp-mjpeg-streamer/0.1@test/testing -s build_type=Release --build=missing --profile=linaro

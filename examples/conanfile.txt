@@ -1,0 +1,29 @@
+[requires]
+boost/1.79.0
+#glog/0.6.0
+grpc/1.48.0
+opencv/4.5.5
+#opencv/4.5.5@demo_opencv/testing
+#gstreamer/1.19.2
+cpp-mjpeg-streamer/0.1@test/testing
+
+[generators]
+cmake
+CMakeToolchain
+CMakeDeps
+
+[options]
+opencv:shared=True
+opencv:with_gtk=False
+opencv:with_ffmpeg=False
+#opencv:with_jpeg=True
+opencv:with_tiff=False
+#opencv:with_gstreamer=False
+opencv:with_quirc=False
+opencv:dnn=False
+#gstreamer:shared=True
+glib:shared=True
+
+[imports]
+bin, protoc* -> ./build_tools
+bin, grpc_cpp_plugin* -> ./build_tools

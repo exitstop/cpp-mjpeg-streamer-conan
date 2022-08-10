@@ -1,3 +1,8 @@
+### Как собрать для conan?
+
+make create
+
+
 ![C++ MJPEG over HTTP Library](https://raw.githubusercontent.com/nadjieb/cpp-mjpeg-streamer/master/doc/images/cpp_mjpeg_streamer.png)
 
 [![Ubuntu](https://github.com/nadjieb/cpp-mjpeg-streamer/workflows/Ubuntu/badge.svg)](https://github.com/nadjieb/cpp-mjpeg-streamer/actions?query=workflow%3AUbuntu)

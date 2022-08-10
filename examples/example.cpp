@@ -6,11 +6,16 @@
 using MJPEGStreamer = nadjieb::MJPEGStreamer;
 
 int main() {
-    cv::VideoCapture cap(0);
-    if (!cap.isOpened()) {
-        std::cerr << "VideoCapture not opened\n";
-        exit(EXIT_FAILURE);
-    }
+    cv::Mat frame = cv::imread("/home/bg/Downloads/jpg_background.jpg", cv::IMREAD_COLOR);
+
+    // print the frame size
+    std::cout << "frame size: " << frame.size() << std::endl;
+
+    //cv::VideoCapture cap(0);
+    //if (!cap.isOpened()) {
+        //std::cerr << "VideoCapture not opened\n";
+        //exit(EXIT_FAILURE);
+    //}
 
     std::vector<int> params = {cv::IMWRITE_JPEG_QUALITY, 90};
 
@@ -27,8 +32,8 @@ int main() {
 
     // Visit /shutdown or another defined target to stop the loop and graceful shutdown
     while (streamer.isRunning()) {
-        cv::Mat frame;
-        cap >> frame;
+        //cv::Mat frame;
+        //cap >> frame;
         if (frame.empty()) {
             std::cerr << "frame not grabbed\n";
             exit(EXIT_FAILURE);
